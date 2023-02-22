@@ -95,8 +95,13 @@ class _MyHomePageState extends State<MyHomePage> {
                       ? const Icon(
                           Icons.check,
                           color: Colors.green,
+                          size: 40,
                         )
-                      : const Icon(Icons.close, color: Colors.red),
+                      : const Icon(
+                          Icons.close,
+                          color: Colors.red,
+                          size: 40,
+                        ),
                 ),
                 CustomStepperStep(
                   title: const Text('Step 3'),
@@ -111,8 +116,22 @@ class _MyHomePageState extends State<MyHomePage> {
                         const Text('Some data is wrong')
                     ],
                   ),
+                  icon: data1 != null && data2 != null
+                      ? const Icon(
+                          Icons.visibility,
+                          color: Colors.green,
+                          size: 40,
+                        )
+                      : const Icon(
+                          Icons.visibility,
+                          color: Colors.red,
+                          size: 40,
+                        ),
                 ),
               ],
+              iconTitleGap: 20,
+              separatorHeight: 8,
+              iconWidth: 40,
               activeIndex: _stepperIndex,
               onStepTapped: (index) {
                 setState(() {

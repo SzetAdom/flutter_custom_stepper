@@ -8,66 +8,132 @@ class CustomStepper extends StatelessWidget {
       {required this.steps,
       required this.activeIndex,
       required this.onStepTapped,
+      required this.iconWidth,
+      required this.separatorHeight,
+      required this.iconTitleGap,
       this.isVertical = true,
+      this.drawLineWhenActive = true,
       super.key});
 
   final List<CustomStepperStep> steps;
   final int activeIndex;
   final bool isVertical;
   final Function(int index) onStepTapped;
+  final double iconWidth;
+  final double separatorHeight;
+  final double iconTitleGap;
+  final bool drawLineWhenActive;
 
   @override
   Widget build(BuildContext context) {
     if (isVertical) {
       return Column(
-        children: [for (var i = 0; i < steps.length; i++) getCurrentItem(i)],
+        children: [
+          for (int i = 0; i < activeIndex; i++)
+            Column(
+              children: [
+                getInactiveListItem(i),
+                getInactiveSeparator(i),
+              ],
+            ),
+          IntrinsicHeight(child: getActiveListItem(activeIndex)),
+          if (activeIndex < steps.length - 1)
+            for (int i = activeIndex + 1; i < steps.length; i++)
+              Column(
+                children: [
+                  getInactiveListItem(i),
+                  getInactiveSeparator(i),
+                ],
+              ),
+        ],
       );
     }
     return Container();
   }
 
-  Widget getCurrentItem(int i) {
-    if (activeIndex == i) {
-      return Column(
-        children: [
-          Row(
-            children: [
-              steps[i].activeIcon ?? steps[i].icon ?? indexIcon(i),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  steps[i].activeTitle ?? steps[i].title,
-                  steps[i].activeSubTitle ?? steps[i].subTitle ?? Container(),
-                ],
-              ),
-            ],
-          ),
-          steps[i].child,
-        ],
-      );
-    } else {
-      return Row(
-        children: [
-          GestureDetector(
-              onTap: () => onStepTapped(i),
-              child: steps[i].icon ?? indexIcon(i)),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              steps[i].title,
-              steps[i].subTitle ?? Container(),
-            ],
-          ),
-        ],
-      );
-    }
+  Widget getActiveListItem(int i) {
+    return Column(
+      children: [
+        Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            getActiveIcon(),
+            SizedBox(
+              width: iconTitleGap,
+            ),
+            Expanded(child: getActiveTitle())
+          ],
+        ),
+        Row(
+          crossAxisAlignment: CrossAxisAlignment.end,
+          children: [
+            SizedBox(
+                width: iconWidth + iconTitleGap,
+                child: getInactiveSeparator(activeIndex)),
+            Expanded(child: steps[activeIndex].child)
+          ],
+        )
+      ],
+    );
   }
 
-  Widget indexIcon(int index) {
-    return Container(
-      width: 40,
-      decoration: const BoxDecoration(shape: BoxShape.circle),
-      child: Text((index + 1).toString()),
+  Widget getActiveTitle() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        steps[activeIndex].activeTitle ?? steps[activeIndex].title,
+        steps[activeIndex].activeSubTitle ??
+            steps[activeIndex].subTitle ??
+            Container(),
+      ],
+    );
+  }
+
+  Widget getActiveIcon() {
+    return SizedBox(
+        width: iconWidth,
+        child: steps[activeIndex].activeIcon ??
+            steps[activeIndex].icon ??
+            Container());
+  }
+
+  Widget getInactiveSeparator(int i) {
+    return Align(
+      alignment: Alignment.centerLeft,
+      child: Container(
+        margin: EdgeInsets.only(left: iconWidth / 2),
+        width: 1,
+        height: separatorHeight,
+        color: i != steps.length - 1 ? Colors.grey : Colors.transparent,
+      ),
+    );
+  }
+
+  Widget getInactiveListItem(int i) {
+    return GestureDetector(
+      onTap: () => onStepTapped(i),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          getInactiveIconByIndex(i),
+          SizedBox(width: iconTitleGap),
+          Expanded(child: getInactiveTitleByIndex(i))
+        ],
+      ),
+    );
+  }
+
+  Widget getInactiveIconByIndex(int i) {
+    return SizedBox(width: iconWidth, child: steps[i].icon ?? Container());
+  }
+
+  Widget getInactiveTitleByIndex(int i) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        steps[i].title,
+        steps[i].subTitle ?? Container(),
+      ],
     );
   }
 }
