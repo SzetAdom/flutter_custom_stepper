@@ -27,25 +27,27 @@ class CustomStepper extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     if (isVertical) {
-      return Column(
-        children: [
-          for (int i = 0; i < activeIndex; i++)
-            Column(
-              children: [
-                getInactiveListItem(i),
-                getInactiveSeparator(i),
-              ],
-            ),
-          IntrinsicHeight(child: getActiveListItem(activeIndex)),
-          if (activeIndex < steps.length - 1)
-            for (int i = activeIndex + 1; i < steps.length; i++)
+      return IntrinsicHeight(
+        child: Column(
+          children: [
+            for (int i = 0; i < activeIndex; i++)
               Column(
                 children: [
                   getInactiveListItem(i),
                   getInactiveSeparator(i),
                 ],
               ),
-        ],
+            IntrinsicHeight(child: getActiveListItem(activeIndex)),
+            if (activeIndex < steps.length - 1)
+              for (int i = activeIndex + 1; i < steps.length; i++)
+                Column(
+                  children: [
+                    getInactiveListItem(i),
+                    getInactiveSeparator(i),
+                  ],
+                ),
+          ],
+        ),
       );
     }
     return Container();
@@ -55,7 +57,7 @@ class CustomStepper extends StatelessWidget {
     return Column(
       children: [
         Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             getActiveIcon(),
             SizedBox(
