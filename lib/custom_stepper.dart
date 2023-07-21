@@ -13,6 +13,8 @@ class CustomStepper extends StatelessWidget {
       required this.iconTitleGap,
       this.isVertical = true,
       this.drawLineWhenActive = true,
+      this.buildActiveIcon,
+      this.buildInactiveIcon,
       super.key});
 
   final List<CustomStepperStep> steps;
@@ -23,6 +25,8 @@ class CustomStepper extends StatelessWidget {
   final double separatorHeight;
   final double iconTitleGap;
   final bool drawLineWhenActive;
+  final Function<Widget>(int index)? buildActiveIcon;
+  final Function<Widget>(int index)? buildInactiveIcon;
 
   @override
   Widget build(BuildContext context) {
@@ -96,6 +100,7 @@ class CustomStepper extends StatelessWidget {
         width: iconWidth,
         child: steps[activeIndex].activeIcon ??
             steps[activeIndex].icon ??
+            buildActiveIcon?.call(activeIndex) ??
             Container());
   }
 
@@ -126,7 +131,9 @@ class CustomStepper extends StatelessWidget {
   }
 
   Widget getInactiveIconByIndex(int i) {
-    return SizedBox(width: iconWidth, child: steps[i].icon ?? Container());
+    return SizedBox(
+        width: iconWidth,
+        child: steps[i].icon ?? buildInactiveIcon?.call(i) ?? Container());
   }
 
   Widget getInactiveTitleByIndex(int i) {
