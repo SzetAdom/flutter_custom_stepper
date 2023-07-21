@@ -25,8 +25,8 @@ class CustomStepper extends StatelessWidget {
   final double separatorHeight;
   final double iconTitleGap;
   final bool drawLineWhenActive;
-  final Function<Widget>(int index)? buildActiveIcon;
-  final Function<Widget>(int index)? buildInactiveIcon;
+  final Widget Function(int index)? buildActiveIcon;
+  final Widget Function(int index)? buildInactiveIcon;
 
   @override
   Widget build(BuildContext context) {
